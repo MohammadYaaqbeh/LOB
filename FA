@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>التقرير المالي</title>
+  <!-- تضمين Bootstrap للتصميم عبر CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <!-- تضمين Chart.js عبر CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      padding: 20px;
+      direction: rtl;
+      /* الاتجاه من اليمين لليسار */
+      text-align: right;
+      /* محاذاة النص إلى اليمين */
+    }
+
+    .header-section {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* الشعار */
+    .header-section img {
+      height: 50px;
+      margin-right: 20px;
+    }
+
+    .input-table {
+      margin-bottom: 20px;
+    }
+
+    .input-table th,
+    .input-table td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    #analysisReport {
+      margin-top: 30px;
+    }
+
+    .results-table th,
+    .results-table td {
+      vertical-align: middle;
+      text-align: right;
+    }
+
+    .section-title {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- الشعار في أعلى الصفحة -->
+    <div class="header-section">
+      <!-- استبدل رابط الصورة أدناه برابط الصورة الحقيقي للشعار -->
+      <img src="https://via.placeholder.com/150" alt="LOB Logo" />
+      <h1>التحليل المالي</h1>
+    </div>
+
+    <!-- اختيار السنوات المالية -->
+    <div class="form-group row">
+      <div class="col-md-6">
+        <label for="currentYearLabel">السنة الحالية (مثال: 2024)</label>
+        <input type="text" id="currentYearLabel" class="form-control" placeholder="2024" />
+      </div>
+      <div class="col-md-6">
+        <label for="previousYearLabel">السنة السابقة (مثال: 2023)</label>
+        <input type="text" id="previousYearLabel" class="form-control" placeholder="2023" />
+      </div>
+    </div>
+
+    <!-- جدول الإدخال (14 بند) -->
+    <table class="table table-bordered input-table">
+      <thead>
+        <tr>
+          <th>البند</th>
+          <th id="currentYearHeader">السنة الحالية</th>
+          <th id="previousYearHeader">السنة السابقة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>الذمم المدينة (Receivables)</td>
+          <td><input type="number" class="form-control" id="receivablesCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="receivablesPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>المخزون (Inventory)</td>
+          <td><input type="number" class="form-control" id="inventoryCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="inventoryPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>متوسط المخزون (Average Inventory)</td>
+          <td><input type="number" class="form-control" id="avgInventoryCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="avgInventoryPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>الأصول المتداولة (Current Assets)</td>
+          <td><input type="number" class="form-control" id="currentAssetsCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="currentAssetsPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>الذمم الدائنة (Payables)</td>
+          <td><input type="number" class="form-control" id="payablesCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="payablesPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>الالتزامات المتداولة (Current Liabilities)</td>
+          <td><input type="number" class="form-control" id="currentLiabCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="currentLiabPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>الدين (Debt)</td>
+          <td><input type="number" class="form-control" id="debtCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="debtPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>حقوق الملكية (Equity)</td>
+          <td><input type="number" class="form-control" id="equityCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="equityPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>المبيعات (Sales)</td>
+          <td><input type="number" class="form-control" id="salesCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="salesPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>تكلفة البضاعة المباعة (COGS)</td>
+          <td><input type="number" class="form-control" id="cogsCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="cogsPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>الربح الإجمالي (Gross Profit)</td>
+          <td><input type="number" class="form-control" id="grossProfitCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="grossProfitPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>المشتريات (Purchases)</td>
+          <td><input type="number" class="form-control" id="purchasesCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="purchasesPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>صافي الربح قبل الضريبة (Net Profit Before Tax)</td>
+          <td><input type="number" class="form-control" id="netProfitBeforeTaxCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="netProfitBeforeTaxPrevious" placeholder="0" /></td>
+        </tr>
+        <tr>
+          <td>صافي الربح بعد الضريبة (Net Profit After Tax)</td>
+          <td><input type="number" class="form-control" id="netProfitAfterTaxCurrent" placeholder="0" /></td>
+          <td><input type="number" class="form-control" id="netProfitAfterTaxPrevious" placeholder="0" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- زر التحليل -->
+    <button type="button" class="btn btn-primary" onclick="processData()">تحليل</button>
+
+    <!-- قسم عرض التقرير -->
+    <div id="analysisReport" style="display:none;">
+      <h2>تقرير التحليل المالي</h2>
+      <div id="ratiosOutput"></div>
+      <canvas id="financialChart" width="600" height="400"></canvas>
+      <br><br>
+      <button class="btn btn-secondary" onclick="exportChart()">تصدير المخطط</button>
+      <button class="btn btn-secondary" onclick="window.print()">طباعة التقرير</button>
+      <button class="btn btn-secondary" onclick="exportToWord()">استخراج التقرير بتنسيق وورد</button>
+    </div>
+  </div>
+
+  <script>
+    function processData() {
+      // اجلب تسميات السنوات
+      const currentYearLabel = document.getElementById('currentYearLabel').value || "السنة الحالية";
+      const previousYearLabel = document.getElementById('previousYearLabel').value || "السنة السابقة";
+      // تحديث عناوين الجدول حسب المدخل
+      document.getElementById('currentYearHeader').textContent = currentYearLabel;
+      document.getElementById('previousYearHeader').textContent = previousYearLabel;
+      // السنة الحالية
+      const receivablesC = Number(document.getElementById('receivablesCurrent').value);
+      const inventoryC = Number(document.getElementById('inventoryCurrent').value);
+      const avgInventoryC = Number(document.getElementById('avgInventoryCurrent').value);
+      const currentAssetsC = Number(document.getElementById('currentAssetsCurrent').value);
+      const payablesC = Number(document.getElementById('payablesCurrent').value);
+      const currentLiabC = Number(document.getElementById('currentLiabCurrent').value);
+      const debtC = Number(document.getElementById('debtCurrent').value);
+      const equityC = Number(document.getElementById('equityCurrent').value);
+      const salesC = Number(document.getElementById('salesCurrent').value);
+      const cogsC = Number(document.getElementById('cogsCurrent').value);
+      const grossProfitC = Number(document.getElementById('grossProfitCurrent').value);
+      const purchasesC = Number(document.getElementById('purchasesCurrent').value);
+      const netProfitBeforeTaxC = Number(document.getElementById('netProfitBeforeTaxCurrent').value);
+      const netProfitAfterTaxC = Number(document.getElementById('netProfitAfterTaxCurrent').value);
+      // السنة السابقة
+      const receivablesP = Number(document.getElementById('receivablesPrevious').value);
+      const inventoryP = Number(document.getElementById('inventoryPrevious').value);
+      const avgInventoryP = Number(document.getElementById('avgInventoryPrevious').value);
+      const currentAssetsP = Number(document.getElementById('currentAssetsPrevious').value);
+      const payablesP = Number(document.getElementById('payablesPrevious').value);
+      const currentLiabP = Number(document.getElementById('currentLiabPrevious').value);
+      const debtP = Number(document.getElementById('debtPrevious').value);
+      const equityP = Number(document.getElementById('equityPrevious').value);
+      const salesP = Number(document.getElementById('salesPrevious').value);
+      const cogsP = Number(document.getElementById('cogsPrevious').value);
+      const grossProfitP = Number(document.getElementById('grossProfitPrevious').value);
+      const purchasesP = Number(document.getElementById('purchasesPrevious').value);
+      const netProfitBeforeTaxP = Number(document.getElementById('netProfitBeforeTaxPrevious').value);
+      const netProfitAfterTaxP = Number(document.getElementById('netProfitAfterTaxPrevious').value);
+      // تحقق من الإدخالات الرقمية
+      const allInputs = [
+        receivablesC, inventoryC, avgInventoryC, currentAssetsC, payablesC, currentLiabC, debtC, equityC,
+        salesC, cogsC, grossProfitC, purchasesC, netProfitBeforeTaxC, netProfitAfterTaxC,
+        receivablesP, inventoryP, avgInventoryP, currentAssetsP, payablesP, currentLiabP, debtP, equityP,
+        salesP, cogsP, grossProfitP, purchasesP, netProfitBeforeTaxP, netProfitAfterTaxP
+      ];
+      if (allInputs.some(val => isNaN(val))) {
+        alert("يرجى التأكد من إدخال قيم رقمية صحيحة في جميع الحقول.");
+        return;
+      }
+      // ========== حساب النسب لكل سنة ==========
+      // ====== Profitability & Return Ratios ======
+      // Gross Profit Margin = Gross Profit / Sales * 100
+      const gpmC = (salesC !== 0) ? ((grossProfitC / salesC) * 100).toFixed(2) + "%" : "غير متاح";
+      const gpmP = (salesP !== 0) ? ((grossProfitP / salesP) * 100).toFixed(2) + "%" : "غير متاح";
+      // Net Profit Margin = net profit before tax / Sales * 100
+      const npmC = (salesC !== 0) ? ((netProfitBeforeTaxC / salesC) * 100).toFixed(2) + "%" : "غير متاح";
+      const npmP = (salesP !== 0) ? ((netProfitBeforeTaxP / salesP) * 100).toFixed(2) + "%" : "غير متاح";
+      // Return on Equity = net profit after tax / Equity * 100
+      const roeC = (equityC !== 0) ? ((netProfitAfterTaxC / equityC) * 100).toFixed(2) + "%" : "غير متاح";
+      const roeP = (equityP !== 0) ? ((netProfitAfterTaxP / equityP) * 100).toFixed(2) + "%" : "غير متاح";
+      // ====== Efficiency Ratios ======
+      // Inventory Days = average inventory / COGS * 365
+      const invDaysC = (cogsC !== 0) ? ((avgInventoryC / cogsC) * 365).toFixed(2) : "غير متاح";
+      const invDaysP = (cogsP !== 0) ? ((avgInventoryP / cogsP) * 365).toFixed(2) : "غير متاح";
+      // Receivables Days = receivables / Sales * 100%
+      const recDaysC = (salesC !== 0) ? ((receivablesC / salesC) * 100).toFixed(2) : "غير متاح";
+      const recDaysP = (salesP !== 0) ? ((receivablesP / salesP) * 100).toFixed(2) : "غير متاح";
+      // Payables Days = payables / Purchases * 100%
+      const payDaysC = (purchasesC !== 0) ? ((payablesC / purchasesC) * 100).toFixed(2) : "غير متاح";
+      const payDaysP = (purchasesP !== 0) ? ((payablesP / purchasesP) * 100).toFixed(2) : "غير متاح";
+      // Cash Conversion Cycle = Inventory Days + Receivables Days - Payables Days
+      let cccC = "غير متاح";
+      if (invDaysC !== "غير متاح" && recDaysC !== "غير متاح" && payDaysC !== "غير متاح") {
+        cccC = (parseFloat(invDaysC) + parseFloat(recDaysC) - parseFloat(payDaysC)).toFixed(2);
+      }
+      let cccP = "غير متاح";
+      if (invDaysP !== "غير متاح" && recDaysP !== "غير متاح" && payDaysP !== "غير متاح") {
+        cccP = (parseFloat(invDaysP) + parseFloat(recDaysP) - parseFloat(payDaysP)).toFixed(2);
+      }
+      // ====== Short-Term Solvency & Liquidity Ratios ======
+      // Current Ratio = current assets / current liabilities
+      const currentRatioC = (currentLiabC !== 0) ? (currentAssetsC / currentLiabC).toFixed(2) : "غير متاح";
+      const currentRatioP = (currentLiabP !== 0) ? (currentAssetsP / currentLiabP).toFixed(2) : "غير متاح";
+      // Quick Ratio = (current assets – inventory) / current liabilities
+      const quickRatioC = (currentLiabC !== 0) ? ((currentAssetsC - inventoryC) / currentLiabC).toFixed(2) : "غير متاح";
+      const quickRatioP = (currentLiabP !== 0) ? ((currentAssetsP - inventoryP) / currentLiabP).toFixed(2) : "غير متاح";
+      // ====== Long-Term Solvency & Liquidity Ratio ======
+      // Gearing Ratio = debt / (debt + equity)
+      const gearingC = ((debtC + equityC) !== 0) ? (debtC / (debtC + equityC)).toFixed(2) : "غير متاح";
+      const gearingP = ((debtP + equityP) !== 0) ? (debtP / (debtP + equityP)).toFixed(2) : "غير متاح";
+      // ========== بناء جداول النسب (مع خانة ملاحظات) ==========
+      const outputHTML = `
+        <div class="section-title">نسب الربحية والعائد (Profitability & Return Ratios)</div>
+        <table class="table table-bordered results-table">
+          <thead>
+            <tr>
+              <th>النسبة</th>
+              <th>${currentYearLabel}</th>
+              <th>${previousYearLabel}</th>
+              <th>الملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>هامش الربح الإجمالي (GPM)</td>
+              <td>${gpmC}</td>
+              <td>${gpmP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>هامش الربح الصافي قبل الضريبة (NPM)</td>
+              <td>${npmC}</td>
+              <td>${npmP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>العائد على حقوق الملكية (ROE)</td>
+              <td>${roeC}</td>
+              <td>${roeP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">نسب الكفاءة (Efficiency Ratios)</div>
+        <table class="table table-bordered results-table">
+          <thead>
+            <tr>
+              <th>النسبة</th>
+              <th>${currentYearLabel}</th>
+              <th>${previousYearLabel}</th>
+              <th>الملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>أيام المخزون (Inventory Days)</td>
+              <td>${invDaysC}</td>
+              <td>${invDaysP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>أيام الذمم المدينة (Receivables Days)</td>
+              <td>${recDaysC}</td>
+              <td>${recDaysP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>أيام الذمم الدائنة (Payables Days)</td>
+              <td>${payDaysC}</td>
+              <td>${payDaysP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>دورة تحويل النقد (CCC)</td>
+              <td>${cccC}</td>
+              <td>${cccP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">نسب الملاءة والسيولة قصيرة الأجل (Short-Term)</div>
+        <table class="table table-bordered results-table">
+          <thead>
+            <tr>
+              <th>النسبة</th>
+              <th>${currentYearLabel}</th>
+              <th>${previousYearLabel}</th>
+              <th>الملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>النسبة الحالية (Current Ratio)</td>
+              <td>${currentRatioC}</td>
+              <td>${currentRatioP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+            <tr>
+              <td>النسبة السريعة (Quick Ratio)</td>
+              <td>${quickRatioC}</td>
+              <td>${quickRatioP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">نسبة الملاءة والسيولة طويلة الأجل (Long-Term)</div>
+        <table class="table table-bordered results-table">
+          <thead>
+            <tr>
+              <th>النسبة</th>
+              <th>${currentYearLabel}</th>
+              <th>${previousYearLabel}</th>
+              <th>الملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>نسبة الرفع المالي (Gearing Ratio)</td>
+              <td>${gearingC}</td>
+              <td>${gearingP}</td>
+              <td><textarea class="form-control" placeholder="ملاحظات"></textarea></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+      document.getElementById('ratiosOutput').innerHTML = outputHTML;
+      document.getElementById('analysisReport').style.display = 'block';
+      // إنشاء المخطط
+      generateChart(currentYearLabel, previousYearLabel, {
+        gpmC: parseFloat(gpmC) || 0,
+        gpmP: parseFloat(gpmP) || 0,
+        npmC: parseFloat(npmC) || 0,
+        npmP: parseFloat(npmP) || 0,
+        roeC: parseFloat(roeC) || 0,
+        roeP: parseFloat(roeP) || 0,
+        invDaysC: parseFloat(invDaysC) || 0,
+        invDaysP: parseFloat(invDaysP) || 0,
+        recDaysC: parseFloat(recDaysC) || 0,
+        recDaysP: parseFloat(recDaysP) || 0,
+        payDaysC: parseFloat(payDaysC) || 0,
+        payDaysP: parseFloat(payDaysP) || 0,
+        cccC: parseFloat(cccC) || 0,
+        cccP: parseFloat(cccP) || 0,
+        currentRatioC: parseFloat(currentRatioC) || 0,
+        currentRatioP: parseFloat(currentRatioP) || 0,
+        quickRatioC: parseFloat(quickRatioC) || 0,
+        quickRatioP: parseFloat(quickRatioP) || 0,
+        gearingC: parseFloat(gearingC) || 0,
+        gearingP: parseFloat(gearingP) || 0
+      });
+    }
+
+    function generateChart(currentYear, previousYear, r) {
+      const ctx = document.getElementById('financialChart').getContext('2d');
+      if (window.financialChart) {
+        window.financialChart.destroy();
+      }
+      window.financialChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [
+            'GPM', 'NPM', 'ROE', 'InvDays', 'RecDays', 'PayDays', 'CCC',
+            'CurrentR', 'QuickR', 'Gearing'
+          ],
+          datasets: [{
+              label: currentYear,
+              data: [
+                r.gpmC, r.npmC, r.roeC, r.invDaysC,
+                r.recDaysC, r.payDaysC, r.cccC,
+                r.currentRatioC, r.quickRatioC, r.gearingC
+              ],
+              backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            },
+            {
+              label: previousYear,
+              data: [
+                r.gpmP, r.npmP, r.roeP, r.invDaysP,
+                r.recDaysP, r.payDaysP, r.cccP,
+                r.currentRatioP, r.quickRatioP, r.gearingP
+              ],
+              backgroundColor: 'rgba(255, 99, 132, 0.7)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: 'مقارنة النسب المالية الرئيسية'
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    }
+    // وظيفة لتصدير المخطط كصورة PNG
+    function exportChart() {
+      const link = document.createElement('a');
+      link.href = document.getElementById('financialChart').toDataURL('image/png');
+      link.download = 'financial_analysis_chart.png';
+      link.click();
+    }
+    // وظيفة لاستخراج التقرير بتنسيق Word
+    function exportToWord() {
+      const chartCanvas = document.getElementById('financialChart');
+      const chartImage = chartCanvas.toDataURL('image/png');
+      const ratioContent = document.getElementById('ratiosOutput').innerHTML;
+      const content = `
+        <div style="text-align: right; direction: rtl;">
+          ${ratioContent}
+          <br>
+          <img src="${chartImage}" alt="Financial Chart" />
+        </div>
+      `;
+      const header = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+              xmlns:w='urn:schemas-microsoft-com:office:word' 
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>تصدير إلى وورد</title></head>
+        <body dir='rtl'>
+      `;
+      const footer = "</body></html>";
+      const sourceHTML = header + content + footer;
+      const blob = new Blob(['\ufeff', sourceHTML], {
+        type: 'application/msword'
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "التقرير_المالي.doc";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  </script>
+</body>
+
+</html>
